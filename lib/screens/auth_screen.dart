@@ -1,4 +1,3 @@
-import 'package:aa_ci/models/login.dart';
 import 'package:aa_ci/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -99,8 +98,8 @@ class _AuthScreenState extends State<AuthScreen> {
             Spacer(),
             _isLoading
                 ? CircularProgressIndicator()
-                : RaisedButton(
-                    color: Colors.amber,
+                : ElevatedButton(
+                    style: ButtonStyle(),
                     onPressed: () {
                       _submit();
                       print(_authData['userName']);

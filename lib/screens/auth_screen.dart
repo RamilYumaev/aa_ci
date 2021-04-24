@@ -18,12 +18,9 @@ class _AuthScreenState extends State<AuthScreen> {
   final _password = TextEditingController();
 
   Future<void> _submit() async {
-    // if (!_formKey.currentState.validate()) {
-    //   return; //@todo
-    // }
-    print("press_button_into_submit");
-
-    print(_authData['userName']);
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
     _formKey.currentState.save();
     setState(() {
       _isLoading = true;
@@ -31,7 +28,21 @@ class _AuthScreenState extends State<AuthScreen> {
     try {
       await Provider.of<AuthProvider>(context, listen: false).login(_authData);
     } catch (error) {
-      print(error.toString());
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error?.toString())));
+    }
+    final errorServer =
+        Provider.of<AuthProvider>(context, listen: false).serverError;
+    print(errorServer);
+    if (errorServer != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(errorServer)));
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -43,7 +54,9 @@ class _AuthScreenState extends State<AuthScreen> {
     ]);
     return Scaffold(
       body: SafeArea(
+        minimum: EdgeInsets.symmetric(horizontal: 25),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Spacer(),
             SvgPicture.asset(
@@ -58,43 +71,54 @@ class _AuthScreenState extends State<AuthScreen> {
             Form(
                 key: _formKey,
                 child: Container(
-                    padding: EdgeInsets.all(25),
                     child: Column(
-                      children: [
-                        Padding(
-                            padding: EdgeInsets.all(10),
-                            child: TextFormField(
-                                controller: _login,
-                                onSaved: (value) {
-                                  _authData['userName'] = value;
-                                },
-                                decoration: InputDecoration(
-                                    labelText:
-                                        "Введите логин или email АИС \"Абитуриент\""))),
-                        Padding(
-                            padding: EdgeInsets.all(10),
-                            child: TextFormField(
-                              controller: _password,
-                              onSaved: (value) {
-                                _authData['password'] = value;
+                  children: [
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return "Поле не должно быть пустым";
+                              }
+                              return null;
+                            },
+                            controller: _login,
+                            onSaved: (value) {
+                              _authData['userName'] = value;
+                            },
+                            decoration: InputDecoration(
+                                labelText:
+                                    "Введите логин или email АИС \"Абитуриент\""))),
+                    Padding(
+                        padding: EdgeInsets.all(10),
+                        child: TextFormField(
+                          controller: _password,
+                          onSaved: (value) {
+                            _authData['password'] = value;
+                          },
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Поле не должно быть пустым";
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: "Пароль",
+                            suffixIcon: IconButton(
+                              icon: _passwordVisible
+                                  ? Icon(Icons.visibility_off)
+                                  : Icon(Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
                               },
-                              decoration: InputDecoration(
-                                labelText: "Пароль",
-                                suffixIcon: IconButton(
-                                  icon: _passwordVisible
-                                      ? Icon(Icons.visibility_off)
-                                      : Icon(Icons.visibility),
-                                  onPressed: () {
-                                    setState(() {
-                                      _passwordVisible = !_passwordVisible;
-                                    });
-                                  },
-                                ),
-                              ),
-                              obscureText: _passwordVisible,
-                            )),
-                      ],
-                    ))),
+                            ),
+                          ),
+                          obscureText: _passwordVisible,
+                        )),
+                  ],
+                ))),
             Spacer(),
             _isLoading
                 ? CircularProgressIndicator()
@@ -102,7 +126,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     style: ButtonStyle(),
                     onPressed: () {
                       _submit();
-                      print(_authData['userName']);
                     },
                     child: Text("Начать работу"),
                   ),

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
   String _tokenSdo;
-  String _serverError;
+  String _serverErrorMessage;
+  int _serverStatus;
   Uri _loginUrl = Uri.https("api.sdo.mpgu.org", "auth");
 
-  String get serverError {
-    notifyListeners();
-    return _serverError;
-  }
+  String get serverError => _serverErrorMessage;
+
+  // set serverError(String message) {
+  //   _serverErrorMessage = message;
+  //   notifyListeners();
+  // }
 
   String get token {
     return _tokenSdo;
@@ -27,13 +29,15 @@ class AuthProvider with ChangeNotifier {
     String password = _authData['password'];
     String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$userName:$password'));
+    _serverErrorMessage = null;
     http.Response r = await http
         .get(_loginUrl, headers: <String, String>{'authorization': basicAuth});
-    print(r.statusCode);
-    print(r.body);
+    _serverStatus = r.statusCode;
+    print(r.statusCode); //@TODO
+    print(r.body); //@TODO
     final _responseData = json.decode(r.body);
     if (_responseData == null) {
-      _serverError = 'Проблемы с интернет соединением';
+      _serverErrorMessage = 'Проблемы с интернет соединением';
       return;
     }
     _tokenSdo = _responseData['token'];
@@ -41,8 +45,9 @@ class AuthProvider with ChangeNotifier {
     if (_tokenSdo != null) {
       saveToken(_tokenSdo);
     } else {
-      _serverError = _responseData['error'];
+      _serverErrorMessage = errorMessageHandler(_serverStatus);
     }
+    print(_serverErrorMessage);
     notifyListeners();
   }
 
@@ -62,5 +67,31 @@ class AuthProvider with ChangeNotifier {
         json.decode(preferrence.getString("userData")) as Map<String, Object>;
     _tokenSdo = extractedData['token'];
     notifyListeners();
+  }
+
+  Future<void> logout() async {
+    _tokenSdo = null;
+    final pref = await SharedPreferences.getInstance();
+    pref.remove('userData');
+    pref.clear();
+    notifyListeners();
+  }
+
+  errorMessageHandler(int status) {
+    var response;
+    switch (status) {
+      case 401:
+        response = "Неправильный логин или пароль!";
+        break;
+      case 403:
+        response = "Не прав, обратитесь к администратору!";
+        break;
+      case 500:
+        response = "Ошибка сервера";
+        break;
+      default:
+        response = "Неизвестная ошибка";
+    }
+    return response;
   }
 }

@@ -36,7 +36,7 @@ class _AuthScreenState extends State<AuthScreen> {
     }
     final errorServer =
         Provider.of<AuthProvider>(context, listen: false).serverError;
-    print(errorServer);
+    print(errorServer); //@TODO
     if (errorServer != null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(errorServer)));
@@ -48,6 +48,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final diviceSize = MediaQuery.of(context).size;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -56,7 +57,6 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SafeArea(
         minimum: EdgeInsets.symmetric(horizontal: 25),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Spacer(),
             SvgPicture.asset(
@@ -122,12 +122,15 @@ class _AuthScreenState extends State<AuthScreen> {
             Spacer(),
             _isLoading
                 ? CircularProgressIndicator()
-                : ElevatedButton(
-                    style: ButtonStyle(),
-                    onPressed: () {
-                      _submit();
-                    },
-                    child: Text("Начать работу"),
+                : SizedBox(
+                    width: diviceSize.width - 50,
+                    child: ElevatedButton(
+                      style: ButtonStyle(),
+                      onPressed: () {
+                        _submit();
+                      },
+                      child: Text("Начать работу"),
+                    ),
                   ),
             Spacer(flex: 4),
           ],

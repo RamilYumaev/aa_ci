@@ -2,8 +2,8 @@
     package="com.example.aa_ci">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="aa_ci"
-        android:icon="@mipmap/ic_launcher">
+        android:label="ЦИ МПГУ"
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

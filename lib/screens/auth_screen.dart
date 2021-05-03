@@ -36,7 +36,7 @@ class _AuthScreenState extends State<AuthScreen> {
     }
     final errorServer =
         Provider.of<AuthProvider>(context, listen: false).serverError;
-    print(errorServer); //@TODO
+    print(errorServer); //TODO
     if (errorServer != null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(errorServer)));

@@ -7,9 +7,20 @@ import 'package:provider/provider.dart';
 class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final fullName = Provider.of<AuthProvider>(context, listen: false).fullName;
+    final accountEmail =
+        Provider.of<AuthProvider>(context, listen: false).email;
+    final initials = Provider.of<AuthProvider>(context, listen: false).initials;
     return Drawer(
         child: ListView(
       children: [
+        UserAccountsDrawerHeader(
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Text(initials),
+            ),
+            accountName: Text(fullName),
+            accountEmail: Text(accountEmail)),
         ListTile(
           title: Text("Главная"),
           onTap: () {

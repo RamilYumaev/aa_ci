@@ -20,8 +20,8 @@ class AnketaScreen extends StatelessWidget {
       return;
     }
     _anketaFormKey.currentState.save();
-    print(_anketaData.toString()); //@TODO
-    print(educationLevelForm); //@TODO
+    print(_anketaData.toString()); //TODO
+    print(educationLevelForm); //TODO
 
     if (educationLevelForm == 1) {
       Navigator.of(ctx).pushNamed(ChoiceViScreen.routeName);

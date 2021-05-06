@@ -1,8 +1,9 @@
 import 'package:aa_ci/drawers/main_drawer.dart';
-import 'package:aa_ci/screens/choice_vi_screen.dart';
+import 'package:aa_ci/screens/competitive_group_filter_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
+// ignore: must_be_immutable
 class AnketaScreen extends StatelessWidget {
   static const routeName = "/anketa";
   GlobalKey<FormState> _anketaFormKey = GlobalKey();
@@ -20,18 +21,30 @@ class AnketaScreen extends StatelessWidget {
       return;
     }
     _anketaFormKey.currentState.save();
-    print(_anketaData.toString()); //TODO
-    print(educationLevelForm); //TODO
 
-    if (educationLevelForm == 1) {
-      Navigator.of(ctx).pushNamed(ChoiceViScreen.routeName);
-    }
+    Navigator.push(
+        ctx,
+        MaterialPageRoute(
+            builder: (ctx) => CompetitiveGroupFilterScreen(
+                  educationLevelForm,
+                )));
+
+    // if (educationLevelForm == 1) {
+    //   Navigator.of(ctx).pushNamed(ChoiceViScreen.routeName);
+    // } else {
+    //   Navigator.push(
+    //       ctx,
+    //       MaterialPageRoute(
+    //           builder: (ctx) => CompetitiveGroupFilterScreen(
+    //                 educationLevelForm,
+    //               )));
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
     var _maskFormatter = MaskTextInputFormatter(
-        mask: "+###########", filter: {"#": RegExp(r'[0-9]')});
+        mask: "############", filter: {"#": RegExp(r'[0-9]')});
     return Scaffold(
         appBar: AppBar(
           actions: [

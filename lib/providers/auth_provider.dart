@@ -51,8 +51,6 @@ class AuthProvider with ChangeNotifier {
     http.Response r = await http
         .get(_loginUrl, headers: <String, String>{'authorization': basicAuth});
     _serverStatus = r.statusCode;
-    print(r.statusCode); //TODO
-    print(r.body); //TODO
     final _responseData = json.decode(r.body);
     if (_responseData == null) {
       _serverErrorMessage = 'Проблемы с интернет соединением';
@@ -69,7 +67,6 @@ class AuthProvider with ChangeNotifier {
     } else {
       _serverErrorMessage = errorMessageHandler(_serverStatus);
     }
-    print(_serverErrorMessage); //TODO
     notifyListeners();
   }
 

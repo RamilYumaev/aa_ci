@@ -1,5 +1,6 @@
 import 'package:aa_ci/api/competitive_group_api.dart';
 import 'package:aa_ci/models/competitive_group.dart';
+import 'package:aa_ci/screens/competitive_group_detail_screen.dart';
 import 'package:aa_ci/widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -32,7 +33,7 @@ class _CompetitiveGroupFilterScreenState
 
   @override
   void dispose() {
-    debouncer.cancel();
+    // debouncer!.cancel();
     super.dispose();
   }
 
@@ -82,6 +83,15 @@ class _CompetitiveGroupFilterScreenState
                           return Padding(
                               padding: EdgeInsets.all(5),
                               child: ListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CompetitiveGroupDetailScreen(
+                                                  comptitiveGroups[index]
+                                                      .competitiveGroupId)));
+                                },
                                 tileColor: Colors.white,
                                 title: Text(
                                   comptitiveGroups[index].specializationName,

@@ -1,4 +1,4 @@
-import 'package:aa_ci/providers/competitive_group_provider.dart';
+import 'package:aa_ci/providers/anketa_provider.dart';
 import 'package:aa_ci/screens/anketa_screen.dart';
 import 'package:aa_ci/screens/choice_vi_screen.dart';
 import 'package:aa_ci/screens/main_screen.dart';
@@ -26,10 +26,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: AuthProvider()),
-        ChangeNotifierProvider.value(value: CompetitiveGroupProvider()),
+        ChangeNotifierProvider.value(value: AnketaProvider()),
       ],
       child: Consumer<AuthProvider>(
         builder: (ctx, auth, _) => MaterialApp(
+            debugShowCheckedModeBanner: false,
             routes: {
               AnketaScreen.routeName: (ctx) => AnketaScreen(),
               MainScreen.routeName: (ctx) => MainScreen(),

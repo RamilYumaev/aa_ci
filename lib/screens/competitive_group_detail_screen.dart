@@ -1,12 +1,27 @@
 import 'package:aa_ci/models/cg_details.dart';
+import 'package:aa_ci/providers/anketa_provider.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 import '../api/competitive_group_api.dart';
 
-class CompetitiveGroupDetailScreen extends StatelessWidget {
+class CompetitiveGroupDetailScreen extends StatefulWidget {
   final int competitiveGroupId;
 
   CompetitiveGroupDetailScreen(this.competitiveGroupId);
+
+  @override
+  _CompetitiveGroupDetailScreenState createState() =>
+      _CompetitiveGroupDetailScreenState();
+}
+
+class _CompetitiveGroupDetailScreenState
+    extends State<CompetitiveGroupDetailScreen> {
+  bool removeButton;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   String getExaminationsText(List exam) {
     String text = exam.length > 1
@@ -18,12 +33,67 @@ class CompetitiveGroupDetailScreen extends StatelessWidget {
     return text;
   }
 
+  String getAdditionalTextButton(String type) {
+    switch (type) {
+      case 'budget':
+        {
+          return " бюджет";
+        }
+      case 'special':
+        {
+          return ' особую квоту';
+        }
+      case 'target':
+        {
+          return ' целевое обучение';
+        }
+      case 'contract':
+        {
+          return ' с оплатой';
+        }
+      default:
+        {
+          return ' ошибка';
+        }
+    }
+  }
+
+  ElevatedButton getButton(cgId, String cgName, String type) {
+    Color buttonColor =
+        Provider.of<AnketaProvider>(context, listen: false).colorButtonCg(cgId);
+    String textButton =
+        Provider.of<AnketaProvider>(context, listen: false).textButtonCg(cgId) +
+            getAdditionalTextButton(type);
+    bool removeButton = Provider.of<AnketaProvider>(context).containsCg(cgId);
+
+    if (removeButton) {
+      buttonColor = Colors.red[300];
+      textButton = 'Удалить' + getAdditionalTextButton(type);
+    } else {
+      buttonColor = Colors.grey[300];
+      textButton = 'Добавить' + getAdditionalTextButton(type);
+    }
+
+    return ElevatedButton(
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(buttonColor)),
+        onPressed: () {
+          Provider.of<AnketaProvider>(context, listen: false)
+              .nessesaryMetod(cgId, cgName);
+          setState(() {
+            removeButton = !removeButton;
+          });
+        },
+        child: Text(textButton));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final cgDetails = CompetitiveGroupApi.getCgDetails(competitiveGroupId);
+    final cgDetails =
+        CompetitiveGroupApi.getCgDetails(widget.competitiveGroupId);
     return Scaffold(
         appBar: AppBar(
-          title: Text("Детальный просмотр"),
+          title: Text("Просмотр"),
           backgroundColor: Colors.white,
           elevation: 0,
         ),
@@ -38,7 +108,7 @@ class CompetitiveGroupDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "${snapshot.data.facultyName}",
+                        "Образовательная программа: \"${snapshot.data.specializationName}\"",
                         style: TextStyle(fontSize: 21.0),
                       ),
                       Divider(),
@@ -49,7 +119,7 @@ class CompetitiveGroupDetailScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         child: Text(
-                            "Образовательная программа:\n${snapshot.data.specializationName}"),
+                            "Институт/факультет, реализующий программу: ${snapshot.data.facultyName}"),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 15),
@@ -109,7 +179,7 @@ class CompetitiveGroupDetailScreen extends StatelessWidget {
                               Container(
                                   width: 140,
                                   padding: const EdgeInsets.all(10),
-                                  color: Colors.brown.shade400,
+                                  color: Colors.brown[200],
                                   child: Column(
                                     children: [
                                       Text(
@@ -156,6 +226,23 @@ class CompetitiveGroupDetailScreen extends StatelessWidget {
                               ),
                             ],
                           )),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (snapshot.data.budgetId != null)
+                            getButton(snapshot.data.budgetId,
+                                snapshot.data.budgetName, 'budget'),
+                          if (snapshot.data.specialId != null)
+                            getButton(snapshot.data.specialId,
+                                snapshot.data.specialName, 'special'),
+                          if (snapshot.data.targetId != null)
+                            getButton(snapshot.data.targetId,
+                                snapshot.data.targetName, 'target'),
+                          if (snapshot.data.contractId != null)
+                            getButton(snapshot.data.contractId,
+                                snapshot.data.contractName, 'contract'),
+                        ],
+                      )
                     ],
                   ),
                 ),

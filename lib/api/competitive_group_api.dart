@@ -55,5 +55,6 @@ class CompetitiveGroupApi {
       final cg = CgDetails.fromJson(detailData);
       return cg;
     }
+    throw Exception();
   }
 }

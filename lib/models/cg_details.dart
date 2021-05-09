@@ -10,6 +10,14 @@ class CgDetails {
   final String passingScore;
   final String educationYearCost;
   final String educationDuration;
+  final String budgetName;
+  final int budgetId;
+  final String contractName;
+  final int contractId;
+  final String specialName;
+  final int specialId;
+  final String targetName;
+  final int targetId;
   final List examinations;
 
   CgDetails(
@@ -22,6 +30,14 @@ class CgDetails {
       @required this.passingScore,
       @required this.educationYearCost,
       @required this.educationDuration,
+      this.budgetId,
+      this.budgetName,
+      @required this.contractId,
+      @required this.contractName,
+      this.specialId,
+      this.specialName,
+      this.targetId,
+      this.targetName,
       @required this.examinations});
 
   factory CgDetails.fromJson(Map<String, dynamic> json) => CgDetails(
@@ -34,5 +50,13 @@ class CgDetails {
       passingScore: json['passing_score'].toString(),
       educationYearCost: json['education_year_cost'].toString(),
       educationDuration: json['education_duration'].toString(),
+      budgetId: json['budget_id'],
+      budgetName: json['budget_name'],
+      contractId: json['contract_id'],
+      contractName: json['contract_name'],
+      specialId: json['special_id'],
+      specialName: json['special_name'],
+      targetId: json['target_id'],
+      targetName: json['target_name'],
       examinations: json['examinations']);
 }

@@ -1,9 +1,12 @@
-import 'package:aa_ci/api/competitive_group_api.dart';
-import 'package:aa_ci/models/competitive_group.dart';
-import 'package:aa_ci/screens/competitive_group_detail_screen.dart';
-import 'package:aa_ci/widgets/search_widget.dart';
+import '../api/competitive_group_api.dart';
+import '../models/competitive_group.dart';
+import '../providers/anketa_provider.dart';
+import '../screens/competitive_group_detail_screen.dart';
+import '../widgets/badge_widget.dart';
+import '../widgets/search_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:provider/provider.dart';
 
 class CompetitiveGroupFilterScreen extends StatefulWidget {
   static const routeName = "/competitive_group";
@@ -42,7 +45,7 @@ class _CompetitiveGroupFilterScreenState
     Duration duration = const Duration(milliseconds: 1000),
   }) {
     if (debouncer != null) {
-      debouncer.cancel();
+      // debouncer.cancel();
     }
 
     debouncer = Timer(duration, callback);
@@ -59,9 +62,28 @@ class _CompetitiveGroupFilterScreenState
     return Scaffold(
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
-          title: Text("Выбор конкурсных групп"),
+          title: Text("Выбор конкурсов"),
           backgroundColor: Colors.white,
           elevation: 0,
+          actions: [
+            if (educationLevelId == 1)
+              IconButton(
+                  icon: Icon(
+                    Icons.filter_list,
+                    color: Colors.blueGrey,
+                  ),
+                  onPressed: () {}),
+            Consumer<AnketaProvider>(
+              builder: (_, anketa, ch) =>
+                  Badge(child: ch, value: anketa.cgLength.toString()),
+              child: IconButton(
+                  icon: Icon(
+                    Icons.send,
+                    color: Colors.blueGrey,
+                  ),
+                  onPressed: () {}),
+            )
+          ],
         ),
         body: comptitiveGroups.isEmpty && query.isEmpty
             ? Center(
@@ -73,7 +95,8 @@ class _CompetitiveGroupFilterScreenState
                   padding: const EdgeInsets.only(bottom: 10),
                   child: _isLoading
                       ? CircularProgressIndicator()
-                      : Text("Найдено ${comptitiveGroups.length}"),
+                      : Text(
+                          "Найдено ${comptitiveGroups.length} конкурса(-ов)"),
                 ),
                 Expanded(
                     child: ListView.builder(

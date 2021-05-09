@@ -7,7 +7,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 class AnketaScreen extends StatelessWidget {
   static const routeName = "/anketa";
   GlobalKey<FormState> _anketaFormKey = GlobalKey();
-  Map<String, String> _anketaData = {
+  Map<String, Object> _anketaData = {
     'lastName': "",
     'firstName': "",
     'patronymic': "",

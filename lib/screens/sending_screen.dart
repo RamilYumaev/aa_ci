@@ -23,6 +23,23 @@ class _SendingScreenState extends State<SendingScreen> {
       return;
     }
     _globalKey.currentState.save();
+    if (Provider.of<AnketaProvider>(context, listen: false)
+        .competitiveGroups
+        .isEmpty) {
+      return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+                content: Text("Нельзя отправлять анкету без конкурсов"),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      child: Text("Понятно"))
+                ],
+              ));
+    }
+
     try {
       setState(() {
         _isLoading = true;

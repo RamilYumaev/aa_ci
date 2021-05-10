@@ -1,3 +1,5 @@
+import 'package:aa_ci/screens/sending_screen.dart';
+
 import '../api/competitive_group_api.dart';
 import '../models/competitive_group.dart';
 import '../providers/anketa_provider.dart';
@@ -25,13 +27,11 @@ class _CompetitiveGroupFilterScreenState
   String query = '';
   Timer debouncer;
   _CompetitiveGroupFilterScreenState(this.educationLevelId);
-  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     init();
-    _isLoading = false;
   }
 
   @override
@@ -78,10 +78,12 @@ class _CompetitiveGroupFilterScreenState
                   Badge(child: ch, value: anketa.cgLength.toString()),
               child: IconButton(
                   icon: Icon(
-                    Icons.send,
+                    Icons.account_tree,
                     color: Colors.blueGrey,
                   ),
-                  onPressed: () {}),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(SendingScreen.routeName);
+                  }),
             )
           ],
         ),
@@ -93,10 +95,8 @@ class _CompetitiveGroupFilterScreenState
                 buildSearch(),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10),
-                  child: _isLoading
-                      ? CircularProgressIndicator()
-                      : Text(
-                          "Найдено ${comptitiveGroups.length} конкурса(-ов)"),
+                  child:
+                      Text("Найдено ${comptitiveGroups.length} конкурса(-ов)"),
                 ),
                 Expanded(
                     child: ListView.builder(

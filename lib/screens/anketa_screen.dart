@@ -1,7 +1,9 @@
 import 'package:aa_ci/drawers/main_drawer.dart';
+import 'package:aa_ci/providers/anketa_provider.dart';
 import 'package:aa_ci/screens/competitive_group_filter_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class AnketaScreen extends StatelessWidget {
@@ -21,6 +23,8 @@ class AnketaScreen extends StatelessWidget {
       return;
     }
     _anketaFormKey.currentState.save();
+    Provider.of<AnketaProvider>(ctx, listen: false)
+        .addPersonalData(_anketaData, educationLevelForm);
 
     Navigator.push(
         ctx,
@@ -28,23 +32,23 @@ class AnketaScreen extends StatelessWidget {
             builder: (ctx) => CompetitiveGroupFilterScreen(
                   educationLevelForm,
                 )));
-
-    // if (educationLevelForm == 1) {
-    //   Navigator.of(ctx).pushNamed(ChoiceViScreen.routeName);
-    // } else {
-    //   Navigator.push(
-    //       ctx,
-    //       MaterialPageRoute(
-    //           builder: (ctx) => CompetitiveGroupFilterScreen(
-    //                 educationLevelForm,
-    //               )));
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
+    AnketaProvider anketa = Provider.of<AnketaProvider>(context);
+    TextEditingController lastNameController =
+        TextEditingController(text: anketa.lastName);
+    TextEditingController firstNameController =
+        TextEditingController(text: anketa.firstName);
+    TextEditingController patronymicController =
+        TextEditingController(text: anketa.patronymic);
+    TextEditingController phoneController =
+        TextEditingController(text: anketa.phoneNumber);
+    TextEditingController emailController =
+        TextEditingController(text: anketa.email);
     var _maskFormatter = MaskTextInputFormatter(
-        mask: "############", filter: {"#": RegExp(r'[0-9]')});
+        mask: "###########", filter: {"#": RegExp(r'[0-9]')});
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -69,6 +73,7 @@ class AnketaScreen extends StatelessWidget {
             Padding(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                 child: TextFormField(
+                  controller: lastNameController,
                   onSaved: (lastName) {
                     _anketaData['lastName'] = lastName;
                   },
@@ -84,6 +89,7 @@ class AnketaScreen extends StatelessWidget {
             Padding(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                 child: TextFormField(
+                  controller: firstNameController,
                   onSaved: (firstName) {
                     _anketaData['firstName'] = firstName;
                   },
@@ -99,6 +105,7 @@ class AnketaScreen extends StatelessWidget {
             Padding(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                 child: TextFormField(
+                  controller: patronymicController,
                   onSaved: (patronymic) {
                     _anketaData['patronymic'] = patronymic;
                   },
@@ -108,6 +115,7 @@ class AnketaScreen extends StatelessWidget {
             Padding(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                 child: TextFormField(
+                  controller: phoneController,
                   onSaved: (phone) {
                     _anketaData['phone'] = phone;
                   },
@@ -116,8 +124,8 @@ class AnketaScreen extends StatelessWidget {
                   decoration: InputDecoration(labelText: "Телефон"),
                   textCapitalization: TextCapitalization.sentences,
                   validator: (value) {
-                    if (value.isEmpty) {
-                      return "Поле не может быть пустым";
+                    if (value.isEmpty || value.length < 11) {
+                      return "Неправильный формат";
                     }
                     return null;
                   },
@@ -125,6 +133,7 @@ class AnketaScreen extends StatelessWidget {
             Padding(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                 child: TextFormField(
+                  controller: emailController,
                   onSaved: (email) {
                     _anketaData['email'] = email;
                   },
@@ -132,7 +141,9 @@ class AnketaScreen extends StatelessWidget {
                   decoration:
                       InputDecoration(labelText: "Адрес электронной почты"),
                   validator: (value) {
-                    if (value.isEmpty && !value.contains("@")) {
+                    if (value.isEmpty &&
+                        !value.contains("@") &&
+                        value.length < 5) {
                       return "Неправильный email";
                     }
                     return null;
@@ -141,6 +152,7 @@ class AnketaScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: DropdownButtonFormField(
+                value: educationLevelForm,
                 onSaved: (educationLevel) {
                   educationLevelForm = educationLevel;
                 },

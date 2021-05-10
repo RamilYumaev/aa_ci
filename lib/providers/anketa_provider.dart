@@ -6,7 +6,8 @@ class AnketaProvider extends ChangeNotifier {
   String patronymic;
   String phoneNumber;
   String email;
-  bool _allreadyAdded = false;
+  String talonNumber;
+  int educationLevelForm;
   List<int> cgIdArray = [];
   Map<String, String> competitiveGroups = {};
 
@@ -14,23 +15,26 @@ class AnketaProvider extends ChangeNotifier {
     return competitiveGroups.length;
   }
 
-  bool get allreadyAdded {
-    return _allreadyAdded;
+  void setTalon(talon) {
+    this.talonNumber = talon;
+
+    print(talonNumber);
+    notifyListeners();
   }
 
-  void addPersonalData(String lastName, String firstName, String patronymic,
-      String phoneNumber, String email) {
-    this.lastName = lastName;
-    this.firstName = firstName;
-    this.patronymic = patronymic;
-    this.phoneNumber = phoneNumber;
-    this.email = email;
+  void addPersonalData(Map<String, Object> _anketaData, educationLevelForm) {
+    this.lastName = _anketaData['lastName'];
+    this.firstName = _anketaData['firstName'];
+    this.patronymic = _anketaData['patronymic'];
+    this.phoneNumber = _anketaData['phone'];
+    this.email = _anketaData['email'];
+    this.educationLevelForm = educationLevelForm;
     notifyListeners();
   }
 
   void addCompetitiveGroup(cgId, cgName) {
     competitiveGroups.putIfAbsent(cgId.toString(), () => cgName);
-    print(competitiveGroups);
+    print(competitiveGroups); //TODO
     notifyListeners();
   }
 
@@ -42,6 +46,19 @@ class AnketaProvider extends ChangeNotifier {
 
   bool containsCg(cgId) {
     return competitiveGroups.containsKey(cgId.toString());
+  }
+
+  String defauiltTaloneVolume() {
+    var patro = "";
+
+    if (this.lastName == null && this.firstName == null) {
+      return "";
+    }
+    if (this.patronymic != null) {
+      patro = this.patronymic.characters.first + ".";
+    }
+
+    return this.lastName + " " + this.firstName.characters.first + "." + patro;
   }
 
   String textButtonCg(cgId) {

@@ -2,8 +2,10 @@ import 'package:aa_ci/providers/anketa_provider.dart';
 import 'package:aa_ci/screens/anketa_screen.dart';
 import 'package:aa_ci/screens/choice_vi_screen.dart';
 import 'package:aa_ci/screens/main_screen.dart';
+import 'package:aa_ci/screens/sending_screen.dart';
 import 'package:aa_ci/screens/splash_screen.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import './providers/auth_provider.dart';
 import './screens/auth_screen.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: AuthProvider()),
@@ -34,7 +40,8 @@ class MyApp extends StatelessWidget {
             routes: {
               AnketaScreen.routeName: (ctx) => AnketaScreen(),
               MainScreen.routeName: (ctx) => MainScreen(),
-              ChoiceViScreen.routeName: (ctx) => ChoiceViScreen(),
+              //  ChoiceViScreen.routeName: (ctx) => ChoiceViScreen(),
+              SendingScreen.routeName: (ctx) => SendingScreen(),
             },
             theme: ThemeData(primarySwatch: Colors.amber),
             home: auth.isAuth

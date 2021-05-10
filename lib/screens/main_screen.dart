@@ -16,19 +16,21 @@ class MainScreen extends StatelessWidget {
         body: ListView(
           padding: EdgeInsets.all(10),
           children: [
-            ListTile(
-              leading: Icon(Icons.badge),
-              trailing: Icon(Icons.arrow_right),
-              tileColor: Colors.white,
-              title: Text(
-                "Создать анкету",
-                style: TextStyle(fontSize: 20.0),
+            Card(
+              child: ListTile(
+                leading: Icon(Icons.badge),
+                trailing: Icon(Icons.arrow_right),
+                tileColor: Colors.white,
+                title: Text(
+                  "Создать анкету",
+                  style: TextStyle(fontSize: 20.0),
+                ),
+                onTap: () {
+                  Navigator.of(context)
+                      .pushReplacementNamed(AnketaScreen.routeName);
+                },
+                subtitle: Text("создание новой анкеты для поступающего в МПГУ"),
               ),
-              onTap: () {
-                Navigator.of(context)
-                    .pushReplacementNamed(AnketaScreen.routeName);
-              },
-              subtitle: Text("создание новой анкеты для поступающего в МПГУ"),
             )
           ],
         ));

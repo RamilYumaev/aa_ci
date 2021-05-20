@@ -57,4 +57,16 @@ class CompetitiveGroupApi {
     }
     throw Exception();
   }
+
+  static Future<Map<String, dynamic>> sendAnketa(
+      Map<String, dynamic> anketa) async {
+    final String accessToken = await AccessToken.getToken();
+    final Uri url = Uri.https('api.sdo.mpgu.org', 'mobile-ci/get-anketa',
+        {'access-token': accessToken});
+
+    final response = await http.post(url, body: json.encode(anketa));
+
+    print(response.body); //TODO
+    return json.decode(response.body) as Map<String, dynamic>;
+  }
 }

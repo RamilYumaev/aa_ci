@@ -2,6 +2,7 @@ import 'package:aa_ci/providers/auth_provider.dart';
 import 'package:aa_ci/screens/auth_screen.dart';
 import 'package:aa_ci/screens/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 
 class MainDrawer extends StatelessWidget {
@@ -26,6 +27,14 @@ class MainDrawer extends StatelessWidget {
           onTap: () {
             Navigator.of(context).pushNamedAndRemoveUntil(
                 MainScreen.routeName, (Route<dynamic> route) => false);
+          },
+        ),
+        ListTile(
+          title: Text("Перезагрузка"),
+          onTap: () {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                MainScreen.routeName, (Route<dynamic> route) => false);
+            Phoenix.rebirth(context);
           },
         ),
         ListTile(

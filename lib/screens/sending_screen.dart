@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:aa_ci/screens/main_screen.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import '../drawers/main_drawer.dart';
 import '../providers/anketa_provider.dart';
@@ -17,6 +20,7 @@ class _SendingScreenState extends State<SendingScreen> {
   GlobalKey<FormState> _globalKey = GlobalKey();
   bool _isLoading = false;
   String talon = "";
+  Map<String, String> response = {'message': ''};
 
   _submit() {
     if (!_globalKey.currentState.validate()) {
@@ -45,16 +49,28 @@ class _SendingScreenState extends State<SendingScreen> {
         _isLoading = true;
       });
 
-      Provider.of<AnketaProvider>(context, listen: false).setTalon(talon);
-      Navigator.of(context).pushNamed(MainScreen.routeName);
+      Provider.of<AnketaProvider>(context, listen: false)
+          .sendAnketa(talon)
+          .then((value) {
+        if (value.containsKey('success_message')) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                value['success_message'],
+              ),
+              backgroundColor: Colors.green[900]));
+          Navigator.of(context).pushNamed(MainScreen.routeName);
+        }
+        if (value.containsKey('error_message')) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                value['error_message'],
+              ),
+              backgroundColor: Colors.red[900]));
+        }
+      });
     } catch (error) {
       throw Exception(error);
     }
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          "Успешно отправлено!",
-        ),
-        backgroundColor: Colors.green[900]));
 
     setState(() {
       _isLoading = false;
@@ -88,7 +104,6 @@ class _SendingScreenState extends State<SendingScreen> {
                       color: Colors.blue,
                     ),
               onPressed: () {
-                print("этап 1");
                 _submit();
               }) // TODO  Куда отправлять?
         ],

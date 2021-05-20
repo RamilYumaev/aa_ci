@@ -48,7 +48,7 @@ class AnketaScreen extends StatelessWidget {
     TextEditingController emailController =
         TextEditingController(text: anketa.email);
     var _maskFormatter = MaskTextInputFormatter(
-        mask: "###########", filter: {"#": RegExp(r'[0-9]')});
+        mask: "7##########", filter: {"#": RegExp(r'[0-9]')});
     return Scaffold(
         appBar: AppBar(
           actions: [

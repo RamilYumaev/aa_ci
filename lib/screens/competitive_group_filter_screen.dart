@@ -1,3 +1,4 @@
+import 'package:aa_ci/screens/exam_screen.dart';
 import 'package:aa_ci/screens/sending_screen.dart';
 
 import '../api/competitive_group_api.dart';
@@ -69,10 +70,16 @@ class _CompetitiveGroupFilterScreenState
             if (educationLevelId == 1)
               IconButton(
                   icon: Icon(
-                    Icons.filter_list,
-                    color: Colors.blueGrey,
+                    Provider.of<AnketaProvider>(context).cseChecker
+                        ? Icons.tune_sharp
+                        : Icons.tune,
+                    color: Provider.of<AnketaProvider>(context).cseChecker
+                        ? Colors.amber
+                        : Colors.blueGrey,
                   ),
-                  onPressed: () {}),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(ExamScreen.routeName);
+                  }),
             Consumer<AnketaProvider>(
               builder: (_, anketa, ch) =>
                   Badge(child: ch, value: anketa.cgLength.toString()),

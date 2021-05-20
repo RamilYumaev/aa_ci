@@ -1,6 +1,7 @@
 import 'package:aa_ci/drawers/main_drawer.dart';
 import 'package:aa_ci/screens/anketa_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 class MainScreen extends StatelessWidget {
   static const routeName = "/main";
@@ -31,7 +32,17 @@ class MainScreen extends StatelessWidget {
                 },
                 subtitle: Text("создание новой анкеты для поступающего в МПГУ"),
               ),
-            )
+            ),
+            Card(
+                child: ListTile(
+              leading: Icon(Icons.clear_all),
+              title: Text("Очистить кэш"),
+              subtitle: Text(
+                  "очищение приложения от старых анкет для освобождения памяти"),
+              onTap: () {
+                Phoenix.rebirth(context);
+              },
+            ))
           ],
         ));
   }

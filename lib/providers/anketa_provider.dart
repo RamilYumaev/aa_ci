@@ -1,6 +1,9 @@
+import 'dart:convert';
+
+import 'package:aa_ci/api/competitive_group_api.dart';
 import 'package:flutter/material.dart';
 
-class AnketaProvider extends ChangeNotifier {
+class AnketaProvider with ChangeNotifier {
   String lastName;
   String firstName;
   String patronymic;
@@ -8,18 +11,45 @@ class AnketaProvider extends ChangeNotifier {
   String email;
   String talonNumber;
   int educationLevelForm;
-  List<int> cgIdArray = [];
+  bool cseChecker = false;
   Map<String, String> competitiveGroups = {};
 
   int get cgLength {
     return competitiveGroups.length;
   }
 
-  void setTalon(talon) {
-    this.talonNumber = talon;
+  void destruct() {
+    this.lastName = null;
+    this.firstName = null;
+    this.patronymic = null;
+    this.phoneNumber = null;
+    this.email = null;
+    this.educationLevelForm = null;
+    this.talonNumber = null;
+    this.competitiveGroups = {};
+  }
 
-    print(talonNumber);
+  bool changeCseChecker(bool value) {
+    this.cseChecker = value;
     notifyListeners();
+  }
+
+  Future<Map<String, dynamic>> sendAnketa(talon) async {
+    this.talonNumber = talon;
+    final Map<String, dynamic> anketa = {
+      'talon': this.talonNumber,
+      'last_name': this.lastName,
+      'first_name': this.firstName,
+      'patronymic': this.patronymic,
+      'phone': this.phoneNumber,
+      'email': this.email,
+      'competitive_groups': competitiveGroups.keys.toList(),
+    };
+    print(anketa);
+    Map<String, dynamic> response =
+        await CompetitiveGroupApi.sendAnketa(anketa);
+
+    return response;
   }
 
   void addPersonalData(Map<String, Object> _anketaData, educationLevelForm) {
@@ -34,13 +64,11 @@ class AnketaProvider extends ChangeNotifier {
 
   void addCompetitiveGroup(cgId, cgName) {
     competitiveGroups.putIfAbsent(cgId.toString(), () => cgName);
-    print(competitiveGroups); //TODO
     notifyListeners();
   }
 
   void removeCompetitiveGroup(cgId) {
     competitiveGroups.remove(cgId.toString());
-    print(competitiveGroups);
     notifyListeners();
   }
 
@@ -58,7 +86,9 @@ class AnketaProvider extends ChangeNotifier {
       patro = this.patronymic.characters.first + ".";
     }
 
-    return this.lastName + " " + this.firstName.characters.first + "." + patro;
+    return this.talonNumber == null
+        ? this.lastName + " " + this.firstName.characters.first + "." + patro
+        : this.talonNumber;
   }
 
   String textButtonCg(cgId) {

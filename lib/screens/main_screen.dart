@@ -30,7 +30,7 @@ class MainScreen extends StatelessWidget {
                   Navigator.of(context)
                       .pushReplacementNamed(AnketaScreen.routeName);
                 },
-                subtitle: Text("создание новой анкеты для поступающего в МПГУ"),
+                subtitle: Text("Создание новой анкеты для поступающего в МПГУ"),
               ),
             ),
             Card(
@@ -38,7 +38,7 @@ class MainScreen extends StatelessWidget {
               leading: Icon(Icons.clear_all),
               title: Text("Очистить кэш"),
               subtitle: Text(
-                  "очищение приложения от старых анкет для освобождения памяти"),
+                  "Очищение приложения от старых анкет для освобождения памяти"),
               onTap: () {
                 Phoenix.rebirth(context);
               },

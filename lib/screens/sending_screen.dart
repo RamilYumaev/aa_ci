@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:aa_ci/screens/main_screen.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 import '../drawers/main_drawer.dart';
 import '../providers/anketa_provider.dart';
@@ -84,9 +81,7 @@ class _SendingScreenState extends State<SendingScreen> {
             .defauiltTaloneVolume());
     AnketaProvider anketa = Provider.of<AnketaProvider>(context, listen: false);
     Map<String, String> competitiveGroup = anketa.competitiveGroups;
-    print(competitiveGroup); //TODO
     var cgKey = competitiveGroup.keys.toList();
-    print(cgKey); //TODO
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -105,7 +100,7 @@ class _SendingScreenState extends State<SendingScreen> {
                     ),
               onPressed: () {
                 _submit();
-              }) // TODO  Куда отправлять?
+              })
         ],
       ),
       drawer: MainDrawer(),

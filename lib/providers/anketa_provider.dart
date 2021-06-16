@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:aa_ci/api/competitive_group_api.dart';
+import 'package:aa_ci/models/cse_result.dart';
 import 'package:flutter/material.dart';
 
 class AnketaProvider with ChangeNotifier {
@@ -13,6 +12,7 @@ class AnketaProvider with ChangeNotifier {
   int educationLevelForm;
   bool cseChecker = false;
   Map<String, String> competitiveGroups = {};
+  List<CseResult> cseValueList = [];
 
   int get cgLength {
     return competitiveGroups.length;
@@ -34,8 +34,24 @@ class AnketaProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void addCseValue(CseResult cseValue) {
+    var cse = cseValueList.where((element) => element.id == cseValue.id);
+
+    if (cse.isEmpty) {
+      cseValueList.add(cseValue);
+    }
+
+    notifyListeners();
+  }
+
+  void removeCseValue(CseResult cseValue) {
+    cseValueList.removeWhere((element) => element.id == cseValue.id);
+    notifyListeners();
+  }
+
   Future<Map<String, dynamic>> sendAnketa(talon) async {
     this.talonNumber = talon;
+
     final Map<String, dynamic> anketa = {
       'talon': this.talonNumber,
       'last_name': this.lastName,
@@ -44,8 +60,8 @@ class AnketaProvider with ChangeNotifier {
       'phone': this.phoneNumber,
       'email': this.email,
       'competitive_groups': competitiveGroups.keys.toList(),
+      'cse_list': cseValueList.map((json) => json.toJson()).toList()
     };
-    print(anketa);
     Map<String, dynamic> response =
         await CompetitiveGroupApi.sendAnketa(anketa);
 

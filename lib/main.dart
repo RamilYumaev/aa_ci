@@ -1,6 +1,5 @@
 import 'package:aa_ci/providers/anketa_provider.dart';
 import 'package:aa_ci/screens/anketa_screen.dart';
-import 'package:aa_ci/screens/choice_vi_screen.dart';
 import 'package:aa_ci/screens/exam_screen.dart';
 import 'package:aa_ci/screens/main_screen.dart';
 import 'package:aa_ci/screens/sending_screen.dart';

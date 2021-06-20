@@ -1,5 +1,5 @@
+import 'package:aa_ci/screens/exam_screen.dart';
 import 'package:aa_ci/screens/sending_screen.dart';
-
 import '../api/competitive_group_api.dart';
 import '../models/competitive_group.dart';
 import '../providers/anketa_provider.dart';
@@ -23,6 +23,7 @@ class CompetitiveGroupFilterScreen extends StatefulWidget {
 class _CompetitiveGroupFilterScreenState
     extends State<CompetitiveGroupFilterScreen> {
   final educationLevelId;
+  bool _giveVerse = false;
   List<CompetitiveGroup> comptitiveGroups = [];
   String query = '';
   Timer debouncer;
@@ -42,10 +43,10 @@ class _CompetitiveGroupFilterScreenState
 
   void debounce(
     VoidCallback callback, {
-    Duration duration = const Duration(milliseconds: 1000),
+    Duration duration = const Duration(milliseconds: 100),
   }) {
     if (debouncer != null) {
-      // debouncer.cancel();
+      debouncer.cancel();
     }
 
     debouncer = Timer(duration, callback);
@@ -57,22 +58,62 @@ class _CompetitiveGroupFilterScreenState
     setState(() => this.comptitiveGroups = cg);
   }
 
+  Switch switchInitState() {
+    _giveVerse = Provider.of<AnketaProvider>(context, listen: false).cseChecker;
+
+    return Switch.adaptive(
+        value: _giveVerse,
+        onChanged: (bool newValue) {
+          setState(() {
+            _giveVerse = newValue;
+            if (_giveVerse) {
+              var exam = Provider.of<AnketaProvider>(context, listen: false)
+                  .cseValueList;
+              var subjectId = [];
+              exam.forEach((element) {
+                subjectId.add(element.id);
+              });
+
+              searchBySubject(subjectId);
+            }
+          });
+          Provider.of<AnketaProvider>(context, listen: false)
+              .changeCseChecker(newValue);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey.shade100,
         appBar: AppBar(
-          title: Text("Выбор конкурсов"),
+          //   title: Text("Конкурсы"),
           backgroundColor: Colors.white,
           elevation: 0,
           actions: [
+            // if (educationLevelId == 1 &&
+            //     Provider.of<AnketaProvider>(context).cseValueList.isNotEmpty)
+            //   Row(
+            //     children: <Widget>[
+            //       Text("Фильтр ЕГЭ"),
+            //       switchInitState(),
+            //     ],
+            //   ),
             if (educationLevelId == 1)
               IconButton(
                   icon: Icon(
-                    Icons.filter_list,
-                    color: Colors.blueGrey,
+                    Provider.of<AnketaProvider>(context).cseValueList.isNotEmpty
+                        ? Icons.tune_sharp
+                        : Icons.tune,
+                    color: Provider.of<AnketaProvider>(context)
+                            .cseValueList
+                            .isNotEmpty
+                        ? Colors.amber
+                        : Colors.blueGrey,
                   ),
-                  onPressed: () {}),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed(ExamScreen.routeName);
+                  }),
             Consumer<AnketaProvider>(
               builder: (_, anketa, ch) =>
                   Badge(child: ch, value: anketa.cgLength.toString()),
@@ -146,6 +187,16 @@ class _CompetitiveGroupFilterScreenState
         if (!mounted) return;
         setState(() {
           this.query = query;
+          this.comptitiveGroups = cg;
+        });
+      });
+
+  Future searchBySubject(subjectId) async => debounce(() async {
+        final cg =
+            await CompetitiveGroupApi.getCompetitiveGroupFilteredBySubjectCse(
+                subjectId);
+        if (!mounted) return;
+        setState(() {
           this.comptitiveGroups = cg;
         });
       });

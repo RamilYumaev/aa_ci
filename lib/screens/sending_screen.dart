@@ -17,6 +17,7 @@ class _SendingScreenState extends State<SendingScreen> {
   GlobalKey<FormState> _globalKey = GlobalKey();
   bool _isLoading = false;
   String talon = "";
+  Map<String, String> response = {'message': ''};
 
   _submit() {
     if (!_globalKey.currentState.validate()) {
@@ -45,16 +46,28 @@ class _SendingScreenState extends State<SendingScreen> {
         _isLoading = true;
       });
 
-      Provider.of<AnketaProvider>(context, listen: false).setTalon(talon);
-      Navigator.of(context).pushNamed(MainScreen.routeName);
+      Provider.of<AnketaProvider>(context, listen: false)
+          .sendAnketa(talon)
+          .then((value) {
+        if (value.containsKey('success_message')) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                value['success_message'],
+              ),
+              backgroundColor: Colors.green[900]));
+          Navigator.of(context).pushNamed(MainScreen.routeName);
+        }
+        if (value.containsKey('error_message')) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                value['error_message'],
+              ),
+              backgroundColor: Colors.red[900]));
+        }
+      });
     } catch (error) {
       throw Exception(error);
     }
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          "Успешно отправлено!",
-        ),
-        backgroundColor: Colors.green[900]));
 
     setState(() {
       _isLoading = false;
@@ -68,9 +81,7 @@ class _SendingScreenState extends State<SendingScreen> {
             .defauiltTaloneVolume());
     AnketaProvider anketa = Provider.of<AnketaProvider>(context, listen: false);
     Map<String, String> competitiveGroup = anketa.competitiveGroups;
-    print(competitiveGroup); //TODO
     var cgKey = competitiveGroup.keys.toList();
-    print(cgKey); //TODO
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -88,9 +99,8 @@ class _SendingScreenState extends State<SendingScreen> {
                       color: Colors.blue,
                     ),
               onPressed: () {
-                print("этап 1");
                 _submit();
-              }) // TODO  Куда отправлять?
+              })
         ],
       ),
       drawer: MainDrawer(),

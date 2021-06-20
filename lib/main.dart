@@ -1,6 +1,6 @@
 import 'package:aa_ci/providers/anketa_provider.dart';
 import 'package:aa_ci/screens/anketa_screen.dart';
-import 'package:aa_ci/screens/choice_vi_screen.dart';
+import 'package:aa_ci/screens/exam_screen.dart';
 import 'package:aa_ci/screens/main_screen.dart';
 import 'package:aa_ci/screens/sending_screen.dart';
 import 'package:aa_ci/screens/splash_screen.dart';
@@ -10,6 +10,7 @@ import './providers/auth_provider.dart';
 import './screens/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -18,7 +19,7 @@ void main() {
 //      exit(1);
     //   }
   };
-  runApp(MyApp());
+  runApp(Phoenix(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
               MainScreen.routeName: (ctx) => MainScreen(),
               //  ChoiceViScreen.routeName: (ctx) => ChoiceViScreen(),
               SendingScreen.routeName: (ctx) => SendingScreen(),
+              ExamScreen.routeName: (ctx) => ExamScreen(),
             },
             theme: ThemeData(primarySwatch: Colors.amber),
             home: auth.isAuth

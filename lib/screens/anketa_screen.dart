@@ -48,7 +48,7 @@ class AnketaScreen extends StatelessWidget {
     TextEditingController emailController =
         TextEditingController(text: anketa.email);
     var _maskFormatter = MaskTextInputFormatter(
-        mask: "###########", filter: {"#": RegExp(r'[0-9]')});
+        mask: "7##########", filter: {"#": RegExp(r'[0-9]')});
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -152,10 +152,11 @@ class AnketaScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
               child: DropdownButtonFormField(
-                value: educationLevelForm,
+                // value: educationLevelForm,
                 onSaved: (educationLevel) {
                   educationLevelForm = educationLevel;
                 },
+                onChanged: (value) {},
                 decoration: InputDecoration(labelText: "Уровень образования"),
                 validator: (value) {
                   if (value == null) {
@@ -163,7 +164,6 @@ class AnketaScreen extends StatelessWidget {
                   }
                   return null;
                 },
-                onChanged: (value) {},
                 items: [
                   DropdownMenuItem(
                     child: Text("Бакалавриат"),

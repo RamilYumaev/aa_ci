@@ -15,10 +15,9 @@ class CompetitiveGroupApi {
       'educationLevelId': educationLevelId.toString(),
     };
     final Uri url =
-        Uri.https('api.sdotest.mpgu.org', 'mobile-ci/get-cgs', queryParameters);
+        Uri.https('api.sdo.mpgu.org', 'mobile-ci/get-cgs', queryParameters);
 
-    final response = await http.get(url,
-        headers: <String, String>{'authorization': BasicAuth.getAuthData()});
+    final response = await http.get(url);
     if (response.statusCode == 200) {
       final List competitiveGroup = json.decode(response.body);
 
@@ -50,10 +49,9 @@ class CompetitiveGroupApi {
       'educationLevelId': '1',
     };
     final Uri url =
-        Uri.https('api.sdotest.mpgu.org', 'mobile-ci/get-cgs', queryParameters);
+        Uri.https('api.sdo.mpgu.org', 'mobile-ci/get-cgs', queryParameters);
 
-    final response = await http.get(url,
-        headers: <String, String>{'authorization': BasicAuth.getAuthData()});
+    final response = await http.get(url);
     if (response.statusCode == 200) {
       final List competitiveGroup = json.decode(response.body);
 
@@ -97,9 +95,9 @@ class CompetitiveGroupApi {
       'competitiveGroupId': competitiveGroupId.toString(),
     };
     final Uri url = Uri.https(
-        'api.sdotest.mpgu.org', 'mobile-ci/get-cg-details', queryParameters);
-    final response = await http.get(url,
-        headers: <String, String>{'authorization': BasicAuth.getAuthData()});
+        'api.sdo.mpgu.org', 'mobile-ci/get-cg-details', queryParameters);
+    final response = await http.get(url);
+    print(response.body);
     if (response.statusCode == 200) {
       final detailData = json.decode(response.body) as Map<String, dynamic>;
       final cg = CgDetails.fromJson(detailData);
@@ -111,12 +109,10 @@ class CompetitiveGroupApi {
   static Future<Map<String, dynamic>> sendAnketa(
       Map<String, dynamic> anketa) async {
     final String accessToken = await AccessToken.getToken();
-    final Uri url = Uri.https('api.sdotest.mpgu.org', 'mobile-ci/get-anketa',
+    final Uri url = Uri.https('api.sdo.mpgu.org', 'mobile-ci/get-anketa',
         {'access-token': accessToken});
 
-    final response = await http.post(url,
-        body: json.encode(anketa),
-        headers: <String, String>{'authorization': BasicAuth.getAuthData()});
+    final response = await http.post(url, body: json.encode(anketa));
 
     print(response.body); //TODO
     return json.decode(response.body) as Map<String, dynamic>;
@@ -124,10 +120,9 @@ class CompetitiveGroupApi {
 
   static getCseSubject() async {
     final String accessToken = await AccessToken.getToken();
-    final Uri url = Uri.https('api.sdotest.mpgu.org', 'mobile-ci/get-dict-cse',
+    final Uri url = Uri.https('api.sdo.mpgu.org', 'mobile-ci/get-dict-cse',
         {'access-token': accessToken});
-    final response = await http.get(url,
-        headers: <String, String>{'authorization': BasicAuth.getAuthData()});
+    final response = await http.get(url);
     if (response.statusCode == 200) {
       var cseSubjectList = json.decode(response.body);
       // List<CseSubject> list =

@@ -98,7 +98,7 @@ class _ExamScreenState extends State<ExamScreen> {
                       child: Column(
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: DropdownButtonFormField(
                               onChanged: (value) {
                                 cseValueMap['subject_id'] = value;
@@ -159,6 +159,7 @@ class _ExamScreenState extends State<ExamScreen> {
                                     if (intValue > 100) {
                                       return "Балл не может превышать значение 100";
                                     }
+
                                     return null;
                                   },
                                   keyboardType: TextInputType.number,

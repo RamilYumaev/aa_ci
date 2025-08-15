@@ -37,7 +37,9 @@ class _CompetitiveGroupFilterScreenState
 
   @override
   void dispose() {
-    // debouncer!.cancel();
+    if (debouncer != null) {
+      debouncer.cancel();
+    }
     super.dispose();
   }
 

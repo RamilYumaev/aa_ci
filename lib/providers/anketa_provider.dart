@@ -29,7 +29,7 @@ class AnketaProvider with ChangeNotifier {
     this.competitiveGroups = {};
   }
 
-  bool changeCseChecker(bool value) {
+  void changeCseChecker(bool value) {
     this.cseChecker = value;
     notifyListeners();
   }

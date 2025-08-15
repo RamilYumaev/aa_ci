@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
+import 'dart:async';
 
 class AuthProvider with ChangeNotifier {
   String _tokenSdo;
@@ -15,11 +16,6 @@ class AuthProvider with ChangeNotifier {
   Uri _loginUrl = Uri.https("api.sdo.mpgu.org", "auth");
 
   String get serverError => _serverErrorMessage;
-
-  // set serverError(String message) {
-  //   _serverErrorMessage = message;
-  //   notifyListeners();
-  // }
 
   String get token {
     return _tokenSdo;
@@ -48,26 +44,39 @@ class AuthProvider with ChangeNotifier {
     String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$userName:$password'));
     _serverErrorMessage = null;
-    http.Response r = await http
-        .get(_loginUrl, headers: <String, String>{'authorization': basicAuth});
-    _serverStatus = r.statusCode;
-    final _responseData = json.decode(r.body);
-    if (_responseData == null) {
-      _serverErrorMessage = 'Проблемы с интернет соединением';
-      return;
-    }
-    _tokenSdo = _responseData['token'];
-    _lastName = _responseData['lastName'];
-    _firstName = _responseData['firstName'];
-    _patronymic = _responseData['patronymic'];
-    _email = _responseData['email'];
+    try {
+      http.Response r = await http
+          .get(_loginUrl, headers: <String, String>{'authorization': basicAuth})
+          .timeout(Duration(seconds: 10));
+      _serverStatus = r.statusCode;
+      final _responseData = json.decode(r.body);
+      if (_responseData == null) {
+        _serverErrorMessage = 'Проблемы с интернет соединением';
+        notifyListeners();
+        return;
+      }
+      _tokenSdo = _responseData['token'];
+      _lastName = _responseData['lastName'];
+      _firstName = _responseData['firstName'];
+      _patronymic = _responseData['patronymic'];
+      _email = _responseData['email'];
 
-    if (_tokenSdo != null) {
-      saveToken(_tokenSdo);
-    } else {
-      _serverErrorMessage = errorMessageHandler(_serverStatus);
+      if (_tokenSdo != null) {
+        saveToken(_tokenSdo);
+      } else {
+        _serverErrorMessage = errorMessageHandler(_serverStatus);
+      }
+      notifyListeners();
+    } on SocketException {
+      _serverErrorMessage = 'Нет подключения к сети';
+      notifyListeners();
+    } on TimeoutException {
+      _serverErrorMessage = 'Таймаут запроса';
+      notifyListeners();
+    } catch (e) {
+      _serverErrorMessage = 'Неизвестная ошибка';
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> saveToken(token) async {
@@ -98,17 +107,6 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // extractedData() async {
-  //   final preferrence = await SharedPreferences.getInstance();
-  //   return json.decode(preferrence.getString("userData"))
-  //       as Map<String, Object>;
-  // }
-
-  // String getDataSP(String data) {
-  //   final extData = extractedData();
-  //   return extData[data];
-  // }
-
   Future<void> logout() async {
     _tokenSdo = null;
     _lastName = null;
@@ -119,7 +117,6 @@ class AuthProvider with ChangeNotifier {
     pref.remove('userData');
     pref.clear();
     notifyListeners();
-    exit(0);
   }
 
   errorMessageHandler(int status) {

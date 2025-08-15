@@ -24,24 +24,20 @@ class _AuthScreenState extends State<AuthScreen> {
     setState(() {
       _isLoading = true;
     });
-    try {
-      await Provider.of<AuthProvider>(context, listen: false).login(_authData);
-    } catch (error) {
-      setState(() {
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(error?.toString())));
-    }
-    final errorServer =
-        Provider.of<AuthProvider>(context, listen: false).serverError;
-    if (errorServer != null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(errorServer)));
-      setState(() {
-        _isLoading = false;
-      });
-    }
+         try {
+       await Provider.of<AuthProvider>(context, listen: false).login(_authData);
+     } catch (error) {}
+     final errorServer =
+         Provider.of<AuthProvider>(context, listen: false).serverError;
+     if (errorServer != null) {
+       ScaffoldMessenger.of(context)
+           .showSnackBar(SnackBar(content: Text(errorServer)));
+     } else {
+       // success
+     }
+     setState(() {
+       _isLoading = false;
+     });
   }
 
   @override

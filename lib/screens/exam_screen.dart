@@ -140,28 +140,27 @@ class _ExamScreenState extends State<ExamScreen> {
                                     cseValueMap['subject_ball'] =
                                         int.parse(value);
                                   },
-                                  validator: (value) {
-                                    var intValue = int.parse(value);
-                                    var minBall = data
-                                        .where((element) =>
-                                            element['id'] ==
-                                            cseValueMap['subject_id'])
-                                        .first['minBall'];
-
-                                    if (value.isEmpty) {
-                                      return "Поле не должно быть пустым!";
-                                    }
-
-                                    if (intValue < minBall) {
-                                      return "Балл не может быть меньше чем ${minBall}";
-                                    }
-
-                                    if (intValue > 100) {
-                                      return "Балл не может превышать значение 100";
-                                    }
-
-                                    return null;
-                                  },
+                                                                     validator: (value) {
+                                     if (value == null || value.isEmpty) {
+                                       return "Поле не должно быть пустым!";
+                                     }
+                                     final parsed = int.tryParse(value);
+                                     if (parsed == null) {
+                                       return "Введите число";
+                                     }
+                                     var minBall = data
+                                         .where((element) =>
+                                             element['id'] ==
+                                             cseValueMap['subject_id'])
+                                         .first['minBall'];
+                                     if (parsed < minBall) {
+                                       return "Балл не может быть меньше чем ${minBall}";
+                                     }
+                                     if (parsed > 100) {
+                                       return "Балл не может превышать значение 100";
+                                     }
+                                     return null;
+                                   },
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                       labelText: "Укажите балл"))),

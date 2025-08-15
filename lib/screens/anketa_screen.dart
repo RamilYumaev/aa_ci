@@ -141,9 +141,11 @@ class AnketaScreen extends StatelessWidget {
                   decoration:
                       InputDecoration(labelText: "Адрес электронной почты"),
                   validator: (value) {
-                    if (value.isEmpty &&
-                        !value.contains("@") &&
-                        value.length < 5) {
+                    if (value == null || value.isEmpty) {
+                      return "Неправильный email";
+                    }
+                    final emailRegex = RegExp(r'^.+@.+\..+$');
+                    if (!emailRegex.hasMatch(value)) {
                       return "Неправильный email";
                     }
                     return null;

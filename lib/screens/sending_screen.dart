@@ -145,7 +145,10 @@ class _SendingScreenState extends State<SendingScreen> {
                   key: _globalKey,
                   child: TextFormField(
                     validator: (value) {
-                      if (value.isEmpty && value.length < 2) {
+                      if (value == null || value.isEmpty) {
+                        return "Поле не должно быть пустым";
+                      }
+                      if (value.trim().length < 2) {
                         return "Длина поля не должна быть меньше 2 символов";
                       }
                       return null;

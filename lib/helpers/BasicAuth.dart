@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class BasicAuth {
-  static getAuthData() {
-    return 'Basic ' + base64Encode(utf8.encode('adminsdotest:Fjjj76654ghhd43'));
+  static String getAuthData() {
+    throw UnimplementedError('BasicAuth should not be used. Use token-based auth.');
   }
 }
